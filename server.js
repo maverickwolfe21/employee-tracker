@@ -109,7 +109,47 @@ async function addDepartment() {
   init();
 }
 
-function addRole() {}
+async function addRole() {
+  const departmentData = await Department.findAll();
+  const departments = departmentData.map((dep) => {
+    return { id: dep.dataValues.id, name: dep.dataValues.name };
+  });
+
+  try {
+    const response = await inquirer.prompt([
+      {
+        type: "input",
+        name: "roleTitle",
+        message: "Please enter the name of the role:",
+      },
+      {
+        type: "number",
+        name: "roleSalary",
+        message: "Please enter the salary of the role (number):",
+      },
+      {
+        type: "list",
+        choices: departments.map((item) => item.name),
+        name: "roleDept",
+        message: "Which department does this role belong to?",
+      },
+    ]);
+
+    if (response) {
+      const newRole = await Role.create({
+        title: response.roleTitle,
+        salary: response.roleSalary,
+        department_id: departments.find((item) => item.name === response.roleDept).id,
+      });
+      if (newRole) {
+        console.log("Role added successfully!");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
 function addEmployee() {}
 function updateEmployeeRole() {}
 
