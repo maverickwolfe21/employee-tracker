@@ -3,12 +3,7 @@ const inquirer = require("inquirer");
 const mysql = require("mysql2");
 
 // create MySQL connection
-const db = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "root",
-  database: "employees_db",
-});
+const sequelize = require("./config/connection");
 
 // prompt for user input with inquirer
 function init() {
@@ -31,30 +26,47 @@ function init() {
     .then((response) => {
       switch (response.start) {
         case "View all departments":
-          // viewDepartments();
+          viewDepartments();
           break;
         case "View all roles":
-          // viewRoles();
+          viewRoles();
           break;
         case "View all employees":
-          // viewEmployees();
+          viewEmployees();
           break;
         case "Add an department":
-          // addDepartment();
+          addDepartment();
           break;
         case "Add a role":
-          // addRole();
+          addRole();
           break;
         case "Add an employee":
-          // addEmployee();
+          addEmployee();
           break;
         case "Update an employee role":
-          // updateEmployeeRole();
+          updateEmployeeRole();
           break;
         case "Exit":
-          break;
+          process.exit(0);
       }
     });
 }
+
+function viewDepartments() {
+  const sql = `SELECT * FROM departments`;
+  sequelize.query(sql, (err, rows) => {
+    if (err) {
+      console.log(err);
+    } else {
+      console.table(rows);
+    }
+  });
+}
+function viewRoles() {}
+function viewEmployees() {}
+function addDepartment() {}
+function addRole() {}
+function addEmployee() {}
+function updateEmployeeRole() {}
 
 init();

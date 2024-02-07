@@ -22,7 +22,7 @@ Employee.init(
     role_id: {
       type: DataTypes.INTEGER,
       references: {
-        model: "employee",
+        model: "role",
         key: "id",
       },
     },

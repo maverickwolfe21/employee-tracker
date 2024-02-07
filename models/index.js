@@ -10,15 +10,18 @@ Department.hasMany(Role, {
 });
 Role.belongsTo(Department, {
   foreignKey: "department_id",
+  onDelete: "CASCADE",
 });
 
 // employees have one role
-Employee.hasOne(Role, {
+Role.hasOne(Employee, {
   foreignKey: "role_id",
+  onDelete: "CASCADE",
 });
 // employees have one manager
 Employee.hasOne(Employee, {
   foreignKey: "manager_id",
+  onDelete: "CASCADE",
 });
 
-module.exports = { Department, Employee, Role };
+module.exports = { Department, Role, Employee };
