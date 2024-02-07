@@ -150,7 +150,105 @@ async function addRole() {
   }
   init();
 }
-function addEmployee() {}
-function updateEmployeeRole() {}
+async function addEmployee() {
+  const roleData = await Role.findAll();
+  const roles = roleData.map((role) => {
+    return { id: role.dataValues.id, title: role.dataValues.title };
+  });
+  const employeeData = await Employee.findAll();
+  const employees = employeeData.map((emp) => {
+    return { id: emp.dataValues.id, name: emp.dataValues.first_name + " " + emp.dataValues.last_name };
+  });
+
+  try {
+    const response = await inquirer.prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employee's first name?",
+      },
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employee's last name?",
+      },
+      {
+        type: "list",
+        choices: roles.map((item) => item.title),
+        name: "roleTitle",
+        message: "Please select the employee's role:",
+      },
+      {
+        type: "list",
+        choices: employees.map((item) => item.name),
+        name: "manager",
+        message: "Please select the employee's manager:",
+      },
+    ]);
+
+    if (response) {
+      const newRole = await Employee.create({
+        first_name: response.firstName,
+        last_name: response.lastName,
+        title: response.roleTitle,
+        salary: response.roleSalary,
+        role_id: roles.find((item) => item.title === response.roleTitle).id,
+        manager_id: employees.find((item) => item.name === response.manager).id,
+      });
+      if (newRole) {
+        console.log("Role added successfully!");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
+async function updateEmployeeRole() {
+  const employeeData = await Employee.findAll();
+  const employees = employeeData.map((emp) => {
+    return { id: emp.dataValues.id, name: emp.dataValues.first_name + " " + emp.dataValues.last_name };
+  });
+  const roleData = await Role.findAll();
+  const roles = roleData.map((role) => {
+    return { id: role.dataValues.id, title: role.dataValues.title };
+  });
+
+  try {
+    const response = await inquirer.prompt([
+      {
+        type: "list",
+        choices: employees.map((item) => item.name),
+        name: "employee",
+        message: "Which employee would you like to modify?",
+      },
+      {
+        type: "list",
+        choices: roles.map((item) => item.title),
+        name: "roleTitle",
+        message: "Which role would you like to switch to?",
+      },
+    ]);
+
+    if (response) {
+      const newRole = await Employee.update(
+        {
+          role_id: roles.find((item) => item.title === response.roleTitle).id,
+        },
+        {
+          where: {
+            id: employees.find((item) => item.name === response.employee).id,
+          },
+        }
+      );
+      if (newRole) {
+        console.log("Role updated successfully!");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
 
 init();
