@@ -1,9 +1,7 @@
 // // inquirer for user prompts
 const inquirer = require("inquirer");
-const mysql = require("mysql2");
-
-// create MySQL connection
-const sequelize = require("./config/connection");
+//import sequelize models
+const { Department, Employee, Role } = require("./models");
 
 // prompt for user input with inquirer
 function init() {
@@ -52,15 +50,18 @@ function init() {
     });
 }
 
-function viewDepartments() {
-  const sql = `SELECT * FROM departments`;
-  sequelize.query(sql, (err, rows) => {
-    if (err) {
-      console.log(err);
-    } else {
-      console.table(rows);
+async function viewDepartments() {
+  try {
+    const deptData = await Department.findAll();
+    if (!deptData) {
+      console.log("No data found!");
+      return;
     }
-  });
+    console.table(deptData.map((dep) => dep.dataValues));
+  } catch (err) {
+    console.log(err);
+  }
+  init();
 }
 function viewRoles() {}
 function viewEmployees() {}
