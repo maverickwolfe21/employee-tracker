@@ -63,7 +63,19 @@ async function viewDepartments() {
   }
   init();
 }
-function viewRoles() {}
+async function viewRoles() {
+  try {
+    const roleData = await Role.findAll();
+    if (!roleData) {
+      console.log("No data found!");
+      return;
+    }
+    console.log(roleData.map((role) => role.dataValues));
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
 function viewEmployees() {}
 function addDepartment() {}
 function addRole() {}
