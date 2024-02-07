@@ -14,7 +14,7 @@ function init() {
         "View all departments",
         "View all roles",
         "View all employees",
-        "Add an department",
+        "Add a department",
         "Add a role",
         "Add an employee",
         "Update an employee role",
@@ -32,7 +32,7 @@ function init() {
         case "View all employees":
           viewEmployees();
           break;
-        case "Add an department":
+        case "Add a department":
           addDepartment();
           break;
         case "Add a role":
@@ -89,7 +89,26 @@ async function viewEmployees() {
   }
   init();
 }
-function addDepartment() {}
+async function addDepartment() {
+  try {
+    const response = await inquirer.prompt({
+      type: "input",
+      name: "deptName",
+      message: "Please enter the name of the department:",
+    });
+
+    if (response) {
+      const newDept = await Department.create({ name: response.deptName });
+      if (newDept) {
+        console.log("Department added successfully!");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
+
 function addRole() {}
 function addEmployee() {}
 function updateEmployeeRole() {}
