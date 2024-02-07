@@ -17,7 +17,8 @@ function init() {
         "Add a department",
         "Add a role",
         "Add an employee",
-        "Update an employee role",
+        "Update an employee's role",
+        "Update an employee's manager",
         "Exit",
       ],
     })
@@ -41,8 +42,11 @@ function init() {
         case "Add an employee":
           addEmployee();
           break;
-        case "Update an employee role":
+        case "Update an employee's role":
           updateEmployeeRole();
+          break;
+        case "Update an employee's manager":
+          updateEmployeeManager();
           break;
         case "Exit":
           process.exit(0);
@@ -255,6 +259,49 @@ async function updateEmployeeRole() {
       );
       if (newRole) {
         console.log("Role updated successfully!");
+      }
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
+
+// begins inquirer journey to select an employee and update their role
+async function updateEmployeeManager() {
+  const employeeData = await Employee.findAll();
+  const employees = employeeData.map((emp) => {
+    return { id: emp.dataValues.id, name: emp.dataValues.first_name + " " + emp.dataValues.last_name };
+  });
+
+  try {
+    const response = await inquirer.prompt({
+      type: "list",
+      choices: employees.map((item) => item.name),
+      name: "employee",
+      message: "Which employee would you like to modify?",
+    });
+
+    const response2 = await inquirer.prompt({
+      type: "list",
+      choices: employees.filter((item) => item.name !== response.employee),
+      name: "managerName",
+      message: "Who is the employee's new manager?",
+    });
+
+    if (response) {
+      const newRole = await Employee.update(
+        {
+          manager_id: employees.find((item) => item.name === response2.managerName).id,
+        },
+        {
+          where: {
+            id: employees.find((item) => item.name === response.employee).id,
+          },
+        }
+      );
+      if (newRole) {
+        console.log("Manager updated successfully!");
       }
     }
   } catch (err) {
