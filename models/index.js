@@ -1,44 +1,24 @@
 // import and initialize models
+const Department = require("./department");
+const Employee = require("./employee");
+const Role = require("./role");
 
-const User = require("./User");
-const Comment = require("./Comment");
-const Ingredient = require("./Ingredient");
-const Recipe = require("./Recipe");
-
-// users have many recipes
-User.hasMany(Recipe, {
-  foreignKey: "user_id",
+// departments have many roles
+Department.hasMany(Role, {
+  foreignKey: "department_id",
   onDelete: "CASCADE",
 });
-Recipe.belongsTo(User, {
-  foreignKey: "user_id",
+Role.belongsTo(Department, {
+  foreignKey: "department_id",
 });
 
-// users have many comments
-User.hasMany(Comment, {
-  foreignKey: "user_id",
-  onDelete: "CASCADE",
+// employees have one role
+Employee.hasOne(Role, {
+  foreignKey: "role_id",
 });
-Comment.belongsTo(User, {
-  foreignKey: "user_id",
-});
-
-// recipes have many ingredients
-Recipe.hasMany(Ingredient, {
-  foreignKey: "recipe_id",
-  onDelete: "CASCADE",
-});
-Ingredient.belongsTo(Recipe, {
-  foreignKey: "recipe_id",
+// employees have one manager
+Employee.hasOne(Employee, {
+  foreignKey: "manager_id",
 });
 
-// recipes have many comments
-Recipe.hasMany(Comment, {
-  foreignKey: "recipe_id",
-  onDelete: "CASCADE",
-});
-Comment.belongsTo(Recipe, {
-  foreignKey: "recipe_id",
-});
-
-module.exports = { User, Comment, Ingredient, Recipe };
+module.exports = { Department, Employee, Role };
