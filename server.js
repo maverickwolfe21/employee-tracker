@@ -214,7 +214,7 @@ async function addEmployee() {
         manager_id: employees.find((item) => item.name === response.manager).id,
       });
       if (newRole) {
-        console.log("Role added successfully!");
+        console.log("Employee was added successfully!");
       }
     }
   } catch (err) {
@@ -262,7 +262,7 @@ async function updateEmployeeRole() {
         }
       );
       if (newRole) {
-        console.log("Role updated successfully!");
+        console.log("Employee's role updated successfully!");
       }
     }
   } catch (err) {
@@ -305,7 +305,7 @@ async function updateEmployeeManager() {
         }
       );
       if (newRole) {
-        console.log("Manager updated successfully!");
+        console.log("Employee's manager was updated successfully!");
       }
     }
   } catch (err) {
