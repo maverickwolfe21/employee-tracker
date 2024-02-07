@@ -70,13 +70,25 @@ async function viewRoles() {
       console.log("No data found!");
       return;
     }
-    console.log(roleData.map((role) => role.dataValues));
+    console.table(roleData.map((role) => role.dataValues));
   } catch (err) {
     console.log(err);
   }
   init();
 }
-function viewEmployees() {}
+async function viewEmployees() {
+  try {
+    const employeeData = await Employee.findAll();
+    if (!employeeData) {
+      console.log("No data found!");
+      return;
+    }
+    console.table(employeeData.map((emp) => emp.dataValues));
+  } catch (err) {
+    console.log(err);
+  }
+  init();
+}
 function addDepartment() {}
 function addRole() {}
 function addEmployee() {}
