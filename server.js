@@ -50,6 +50,7 @@ function init() {
     });
 }
 
+// shows all departments in console
 async function viewDepartments() {
   try {
     const deptData = await Department.findAll();
@@ -63,6 +64,8 @@ async function viewDepartments() {
   }
   init();
 }
+
+// shows all roles in console
 async function viewRoles() {
   try {
     const roleData = await Role.findAll();
@@ -76,6 +79,8 @@ async function viewRoles() {
   }
   init();
 }
+
+// shows all employees in console
 async function viewEmployees() {
   try {
     const employeeData = await Employee.findAll();
@@ -89,6 +94,8 @@ async function viewEmployees() {
   }
   init();
 }
+
+// begins inquirer journey to create department and store in DB
 async function addDepartment() {
   try {
     const response = await inquirer.prompt({
@@ -109,6 +116,7 @@ async function addDepartment() {
   init();
 }
 
+// begins inquirer journey to create role and store in DB
 async function addRole() {
   const departmentData = await Department.findAll();
   const departments = departmentData.map((dep) => {
@@ -150,6 +158,8 @@ async function addRole() {
   }
   init();
 }
+
+// begins inquirer journey to create employee and store in DB
 async function addEmployee() {
   const roleData = await Role.findAll();
   const roles = roleData.map((role) => {
@@ -204,6 +214,8 @@ async function addEmployee() {
   }
   init();
 }
+
+// begins inquirer journey to select an employee and update their role
 async function updateEmployeeRole() {
   const employeeData = await Employee.findAll();
   const employees = employeeData.map((emp) => {
