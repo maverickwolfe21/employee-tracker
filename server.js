@@ -19,6 +19,7 @@ function init() {
         "Add an employee",
         "Update an employee's role",
         "Update an employee's manager",
+        "View a department's budget",
         "Exit",
       ],
     })
@@ -47,6 +48,9 @@ function init() {
           break;
         case "Update an employee's manager":
           updateEmployeeManager();
+          break;
+        case "View a department's budget":
+          viewBudget();
           break;
         case "Exit":
           process.exit(0);
@@ -267,7 +271,7 @@ async function updateEmployeeRole() {
   init();
 }
 
-// begins inquirer journey to select an employee and update their role
+// begins inquirer journey to select an employee and update their manager
 async function updateEmployeeManager() {
   const employeeData = await Employee.findAll();
   const employees = employeeData.map((emp) => {
@@ -307,6 +311,50 @@ async function updateEmployeeManager() {
   } catch (err) {
     console.log(err);
   }
+  init();
+}
+
+//
+async function viewBudget() {
+  const departmentData = await Department.findAll();
+  const departments = departmentData.map((dep) => {
+    return { id: dep.dataValues.id, name: dep.dataValues.name };
+  });
+
+  try {
+    const response = await inquirer.prompt([
+      {
+        type: "list",
+        choices: departments.map((item) => item.name),
+        name: "department",
+        message: "Select a department to view its budget.",
+      },
+    ]);
+
+    if (response) {
+      // get all employees and grab their role_ids
+      const employeeData = await Employee.findAll();
+      const employeeRoleIds = employeeData.map((emp) => emp.dataValues.role_id);
+      // console.log("employee ids", employeeRoleIds);
+
+      // get all role_ids in the selected department
+      const selectedDepartmentId = departments.find((item) => item.name === response.department).id;
+      const roleData = await Role.findAll({ where: { department_id: selectedDepartmentId } });
+      const roleIds = roleData.map((role) => role.dataValues.id);
+      // console.log("deptRoleIds", roleIds);
+
+      const activeRoleIds = roleIds.filter((item) => employeeRoleIds.includes(item));
+      // console.log("active role_ids", activeRoleIds);
+
+      const activeSalaries = roleData.filter((item) => activeRoleIds.includes(item.dataValues.id)).map((i) => i.dataValues.salary);
+      const sumSalaries = activeSalaries.reduce((a, c) => a + c, 0);
+
+      console.log(`The total utilized budget for the ${response.department} department is ${sumSalaries}.`);
+    }
+  } catch (err) {
+    console.log(err);
+  }
+
   init();
 }
 
